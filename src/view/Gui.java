@@ -26,7 +26,7 @@ public class Gui extends JFrame implements ActionListener {
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout());
 		
-		String[] centroidAlgorithms = {"Random Point Generation", "Random Point Selection", "Pillar Selection", "Refinement Selection"};
+		String[] centroidAlgorithms = {"Random Selection", "Pillar Selection", "Refinement Selection"};
 		centroidAlgorithmBox = new JComboBox(centroidAlgorithms);
 		centroidAlgorithmBox.setSelectedIndex(0);
 		

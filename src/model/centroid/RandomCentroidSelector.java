@@ -6,7 +6,7 @@ import java.util.Random;
 import model.objects.Cluster;
 import model.objects.CoordinatePair;
 
-public class RandomCentroidGenerator implements CentroidSelector{
+public class RandomCentroidSelector implements CentroidSelector{
 
 	public ArrayList<Cluster> findClusters(int numClusters, LinkedList<CoordinatePair> points) {
 		ArrayList<Cluster> initialClusters = new ArrayList<Cluster>();

@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import model.centroid.CentroidSelector;
-import model.centroid.RandomCentroidGenerator;
+import model.centroid.RandomCentroidSelector;
 import model.objects.Cluster;
 import model.objects.CoordinatePair;
 
@@ -25,8 +25,7 @@ public class Algorithm {
 		this.initializers = new HashMap<String, CentroidSelector>();
 		this.debug = debug;
 		
-		initializers.put("Random Point Generation", new RandomCentroidGenerator());
-		//initializers.put("Random Point Selection", new RandomCentroidSelector());
+		initializers.put("Random Selection", new RandomCentroidSelector());
 		//initializers.put("Pillar Selection", null);
 		//initializers.put("Refinement Selection", null);
 		
