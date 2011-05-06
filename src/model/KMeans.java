@@ -1,8 +1,8 @@
-
+package model;
 import java.io.File;
 
-import model.Algorithm;
 import view.Gui;
+
 
 public class KMeans {
 	

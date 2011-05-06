@@ -1,27 +1,42 @@
+package model;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Random;
 import java.util.Scanner;
 
 public class Algorithm {
 
 	private LinkedList<CoordinatePair> points;
 	private ArrayList<Cluster> clusters;
+	private HashMap<String, CentroidSelector> initializers;
 	private double maxX;
 	private double maxY;
+	private boolean debug;
 	
-	public Algorithm(File file) throws Exception {
+	public Algorithm(File file, boolean debug) throws Exception {
 		this.points = new LinkedList<CoordinatePair>();
+		this.initializers = new HashMap<String, CentroidSelector>();
+		this.debug = debug;
+		
+		initializers.put("Random Point Generation", new RandomCentroidGenerator());
+		//initializers.put("Random Point Selection", new RandomCentroidSelector());
+		//initializers.put("Pillar Selection", null);
+		//initializers.put("Refinement Selection", null);
+		
 		this.clusters = null;
 		maxX = 0;
 		maxY = 0;
 		loadFile(file);
 	}
 	
-	public void run(int numClusters, int numRounds) {
-		clusters = getInitialClusters(numClusters);
+	public boolean run(int numClusters, int numRounds, String method) {
+		clusters = initializers.get(method).findClusters(numClusters, points);
+		
+		if(clusters == null) {
+			return false;
+		}
 		
 		for(int round = 0; round < numRounds; round++) {
 			// if repeat round, recalculate centroid, clear points  
@@ -49,49 +64,17 @@ public class Algorithm {
 				closest.addCoordinate(point);
 			}
 			
-			System.out.println("### PASS " + round + " ###");
-			for(Cluster cluster : clusters) {
-				System.out.println("Cluster: " + cluster.getClusterId() + 
-						" -- Points: " + cluster.getPoints().size() + " -- Color: " +
-						cluster.getColor().toString());
+			if(debug) {
+				System.out.println("### PASS " + round + " ###");
+				for(Cluster cluster : clusters) {
+					System.out.println("Cluster: " + cluster.getClusterId() + 
+							" -- Points: " + cluster.getPoints().size() + " -- Color: " +
+							cluster.getColor().toString());
+				}
 			}
 		}
 		
-		// update the gui
-	}
-	
-	private ArrayList<Cluster> getInitialClusters(int numClusters) {
-		
-		ArrayList<Cluster> initialClusters = new ArrayList<Cluster>();	
-		Random rng = new Random();
-		
-		for(int i = 0; i < numClusters; i++) {
-			
-			boolean done = false;
-			
-			CoordinatePair centroid = points.get(rng.nextInt(points.size()));
-			Cluster newCluster = new Cluster(centroid, i);
-			
-			while(!done) {
-				
-				done = true;
-				
-				for(Cluster cluster : initialClusters) {
-					if(cluster.overlaps(newCluster)) {
-						done = false;
-					}
-				}
-				
-				if(!done) {
-					centroid = points.get(rng.nextInt(points.size()));
-					newCluster.setCentroid(centroid);
-				}
-			}
-			
-			initialClusters.add(i, newCluster);
-		}
-		
-		return initialClusters;
+		return true;
 	}
 	
 	private void loadFile(File file) throws Exception {
@@ -111,7 +94,6 @@ public class Algorithm {
 		findMaxX();
 		findMaxY();
 	}
-	
 	
 	public double[] getAllXPoints() {
 		if(clusters == null) {
@@ -149,6 +131,7 @@ public class Algorithm {
 		return yPoints;
 	}
 	
+	@SuppressWarnings("unused")
 	public Color[] getAllPointColors() {
 		if(clusters == null) {
 			return null;

@@ -1,13 +1,13 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+package view;
+
 
 // Import Packages
 import java.awt.*;
 import java.awt.font.*;
 import java.awt.geom.*;
 import javax.swing.*;
+
+
 
 // Create Graph
 public class GraphPanel extends JPanel {
