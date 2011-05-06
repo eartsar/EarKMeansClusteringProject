@@ -1,10 +1,15 @@
-package model;
+package model.algorithm;
 import java.awt.Color;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Scanner;
+
+import model.centroid.CentroidSelector;
+import model.centroid.RandomCentroidGenerator;
+import model.objects.Cluster;
+import model.objects.CoordinatePair;
 
 public class Algorithm {
 

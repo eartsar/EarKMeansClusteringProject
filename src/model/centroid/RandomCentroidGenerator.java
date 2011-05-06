@@ -1,7 +1,10 @@
-package model;
+package model.centroid;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Random;
+
+import model.objects.Cluster;
+import model.objects.CoordinatePair;
 
 public class RandomCentroidGenerator implements CentroidSelector{
 

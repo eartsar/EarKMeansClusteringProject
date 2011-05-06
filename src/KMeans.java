@@ -1,7 +1,7 @@
 
 import java.io.File;
 
-import model.Algorithm;
+import model.algorithm.Algorithm;
 import view.Gui;
 
 public class KMeans {

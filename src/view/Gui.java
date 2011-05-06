@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import model.Algorithm;
+import model.algorithm.Algorithm;
 
 @SuppressWarnings("serial")
 public class Gui extends JFrame implements ActionListener {
