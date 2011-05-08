@@ -14,7 +14,7 @@ public class Cluster {
 	
 	public Cluster(CoordinatePair centroid, int clusterId) {
 		this.clusterId = clusterId;
-		this.centroid = centroid;
+		this.centroid = new CoordinatePair(centroid);
 		this.color = ClusterColorer.INSTANCE.getColor(clusterId);
 		values = new LinkedList<CoordinatePair>();
 	}
@@ -32,10 +32,14 @@ public class Cluster {
 	}
 	
 	public void clearPoints() {
-		values.clear();
+		values = new LinkedList<CoordinatePair>();;
 	}
 	
 	public void calculateCentroid() {
+		if(values.size() == 0 || values.size() == 1) {
+			return;
+		}
+		
 		double totalX = 0;
 		double totalY = 0;
 		
@@ -60,8 +64,22 @@ public class Cluster {
 				);
 	}
 	
+	public double getObjectiveFunction() {
+		double totalDistance = 0;
+		
+		for(CoordinatePair point : values) {
+			totalDistance = totalDistance + point.distanceFromPoint(centroid);
+		}
+		
+		if(totalDistance == 0) {
+			return 0;
+		}
+		
+		return totalDistance / values.size();
+	}
+	
 	public void setCentroid(CoordinatePair centroid) {
-		this.centroid = centroid;
+		this.centroid = new CoordinatePair(centroid);
 	}
 
 	public CoordinatePair getCentroid() {

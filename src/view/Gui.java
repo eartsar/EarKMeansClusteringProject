@@ -26,7 +26,7 @@ public class Gui extends JFrame implements ActionListener {
 		controlPanel = new JPanel();
 		controlPanel.setLayout(new FlowLayout());
 		
-		String[] centroidAlgorithms = {"Random Selection", "Pillar Selection", "Refinement Selection"};
+		String[] centroidAlgorithms = {"Random Selection", "Pillar Selection", "Pillar-Web Refinement Selection"};
 		centroidAlgorithmBox = new JComboBox(centroidAlgorithms);
 		centroidAlgorithmBox.setSelectedIndex(0);
 		
@@ -87,9 +87,12 @@ public class Gui extends JFrame implements ActionListener {
 			
 			double[] xPoints = model.getAllXPoints();
 			double[] yPoints = model.getAllYPoints();
+			double[] xCentroidPoints = model.getAllXCentroidPoints();
+			double[] yCentroidPoints = model.getAllYCentroidPoints();
 			Color[] pointColors = model.getAllPointColors();
 			
 			graphPanel.setPoints(xPoints, yPoints, pointColors);
+			graphPanel.setCentroidPoints(xCentroidPoints, yCentroidPoints);
 		}
 	}
 }

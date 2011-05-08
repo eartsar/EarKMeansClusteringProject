@@ -18,6 +18,10 @@ public class GraphPanel extends JPanel {
     double[] xPoints;
     double[] yPoints;
     Color[] pointColors;
+    
+    double[] xCentroidPoints;
+    double[] yCentroidPoints;
+    
     private Gui parentFrame;
 
     public GraphPanel(Gui parentFrame) {
@@ -25,6 +29,9 @@ public class GraphPanel extends JPanel {
     	this.xPoints = null;
     	this.yPoints = null;
     	this.pointColors = null;
+    	
+    	this.xCentroidPoints = null;
+    	this.yCentroidPoints = null;
     }
     
     public void setPoints(double[] xPoints, double[] yPoints, Color[] pointColors) {
@@ -33,6 +40,11 @@ public class GraphPanel extends JPanel {
     	this.pointColors = pointColors;
     	
     	this.repaint();
+    }
+    
+    public void setCentroidPoints(double[] xCentroidPoints, double[] yCentroidPoints) {
+    	this.xCentroidPoints = xCentroidPoints;
+    	this.yCentroidPoints = yCentroidPoints;
     }
     
     // Override paintComponent
@@ -82,7 +94,7 @@ public class GraphPanel extends JPanel {
         
 
         // if we don't have points, don't plot them
-        if(xPoints == null || yPoints == null) {
+        if(xPoints == null || yPoints == null || pointColors == null) {
         	return;
         }
         
@@ -94,6 +106,22 @@ public class GraphPanel extends JPanel {
             // Set Points with scale
             double x = PADDING + xPoints[i]*xInc;
             double y = h - PADDING - scale*yPoints[i];
+            g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));
+        }
+        
+        // check if centroids were defined
+        if(xCentroidPoints == null || yCentroidPoints == null) {
+        	return;
+        }
+        
+     // otherwise, if we do, plot them out
+        for(int i = 0; i < xCentroidPoints.length; i++) {
+
+        	g2.setPaint(Color.RED);
+        	
+            // Set Points with scale
+            double x = PADDING + xCentroidPoints[i]*xInc;
+            double y = h - PADDING - scale*yCentroidPoints[i];
             g2.fill(new Ellipse2D.Double(x-2, y-2, 4, 4));
         }
     }

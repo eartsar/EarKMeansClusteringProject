@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.Scanner;
 
 import model.centroid.CentroidSelector;
+import model.centroid.PillarCentroidSelector;
+import model.centroid.PillarWebRefinementCentroidSelector;
 import model.centroid.RandomCentroidSelector;
 import model.objects.Cluster;
 import model.objects.CoordinatePair;
@@ -20,14 +22,23 @@ public class Algorithm {
 	private double maxY;
 	private boolean debug;
 	
+	// these are for backwards-reference on the refinement selector
+	private int numClusters;
+	private String method;
+	private int numRounds;
+	
 	public Algorithm(File file, boolean debug) throws Exception {
 		this.points = new LinkedList<CoordinatePair>();
 		this.initializers = new HashMap<String, CentroidSelector>();
 		this.debug = debug;
 		
+		this.numClusters = 0;
+		this.method = null;
+		this.numRounds = 0;
+		
 		initializers.put("Random Selection", new RandomCentroidSelector());
-		//initializers.put("Pillar Selection", null);
-		//initializers.put("Refinement Selection", null);
+		initializers.put("Pillar Selection", new PillarCentroidSelector());
+		initializers.put("Pillar-Web Refinement Selection", new PillarWebRefinementCentroidSelector(this));
 		
 		this.clusters = null;
 		maxX = 0;
@@ -36,6 +47,10 @@ public class Algorithm {
 	}
 	
 	public boolean run(int numClusters, int numRounds, String method) {
+		this.numClusters = numClusters;
+		this.numRounds = numRounds;
+		this.method = method;
+		
 		clusters = initializers.get(method).findClusters(numClusters, points);
 		
 		if(clusters == null) {
@@ -65,9 +80,16 @@ public class Algorithm {
 					}
 				}
 				
+				if(closest == null) {
+					System.out.println("NULL");
+				} else if(point == null) {
+					System.out.println("NULL");
+				}
+				
 				closest.addCoordinate(point);
 			}
 			
+			// print point allocation
 			if(debug) {
 				System.out.println("### PASS " + round + " ###");
 				for(Cluster cluster : clusters) {
@@ -77,6 +99,19 @@ public class Algorithm {
 				}
 			}
 		}
+		
+		// print cluster accuracy
+		double totalObj = 0;
+		for(Cluster cluster : clusters) {
+			
+			double clusterObj = cluster.getObjectiveFunction();
+			totalObj = totalObj + clusterObj;
+			cluster.calculateCentroid();
+			System.out.println("Cluster: " + cluster.getClusterId() + 
+					" -- objective function = " + clusterObj);
+		}
+		totalObj = totalObj / clusters.size();
+		System.out.println("Average: " + totalObj);
 		
 		return true;
 	}
@@ -97,6 +132,40 @@ public class Algorithm {
 		
 		findMaxX();
 		findMaxY();
+	}
+	
+	public double[] getAllXCentroidPoints() {
+		if(clusters == null) {
+			return null;
+		}
+		
+		double[] xPoints = new double[clusters.size()];
+		int count = 0;
+		
+		for(Cluster cluster : clusters) {
+			cluster.calculateCentroid();
+			xPoints[count] = cluster.getCentroid().x;
+			count++;
+		}
+		
+		return xPoints;
+	}
+	
+	public double[] getAllYCentroidPoints() {
+		if(clusters == null) {
+			return null;
+		}
+		
+		double[] yPoints = new double[clusters.size()];
+		int count = 0;
+		
+		for(Cluster cluster : clusters) {
+			cluster.calculateCentroid();
+			yPoints[count] = cluster.getCentroid().y;
+			count++;
+		}
+		
+		return yPoints;
 	}
 	
 	public double[] getAllXPoints() {
@@ -180,6 +249,22 @@ public class Algorithm {
 	
 	public double getMaxY() {
 		return maxY;
+	}
+	
+	public ArrayList<Cluster> getClusters() {
+		return clusters;
+	}
+	
+	public String getMethod() {
+		return method;
+	}
+	
+	public int getNumRounds() {
+		return numRounds;
+	}
+	
+	public int getNumClusters() {
+		return numClusters;
 	}
 	
 }
